@@ -1,5 +1,10 @@
 provider "aws" {
   region = var.aws_region
+  
+  # 显式设置中国区域的终端节点URL
+  endpoints {
+    sts = "https://sts.${var.aws_region}.amazonaws.com.cn"
+  }
 }
 
 # 使用AWS提供的Lambda模块
