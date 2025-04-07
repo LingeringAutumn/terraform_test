@@ -1,5 +1,9 @@
 provider "aws" {
   region = var.aws_region
+  # 为中国区域添加特殊配置
+  endpoints {
+    sts = "sts.${var.aws_region}.amazonaws.com.cn"
+  }
   # 凭证将从共享配置或环境变量中自动读取
 }
 
@@ -13,7 +17,7 @@ resource "aws_iam_role" "lambda_role" {
       Action = "sts:AssumeRole"
       Effect = "Allow"
       Principal = {
-        Service = "lambda.amazonaws.com"
+        Service = "lambda.amazonaws.com.cn"  # 中国区域使用特殊的服务标识符
       }
     }]
   })

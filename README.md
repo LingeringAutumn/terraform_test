@@ -58,6 +58,18 @@ aws-lambda/
    terraform destroy
    ```
 
+## AWS中国区域特别说明
+
+如果您使用的是AWS中国区域(cn-north-1或cn-northwest-1)，请注意：
+
+1. 确保使用的是中国区域专用账户和凭证
+2. 服务终端节点和ARN格式有所不同，已在配置中自动调整
+3. 如遇凭证问题，请使用以下命令验证凭证是否正确配置：
+
+```bash
+aws sts get-caller-identity --region cn-northwest-1 --endpoint-url https://sts.cn-northwest-1.amazonaws.com.cn
+```
+
 ## Lambda函数说明
 
 本项目部署了一个简单的Node.js Lambda函数，当触发时返回一条"Hello, World!"消息。您可以根据自己的需求修改`src/index.js`文件。
