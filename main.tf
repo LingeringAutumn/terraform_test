@@ -34,7 +34,7 @@ module "lambda_function" {
       principals = {
         service = {
           type        = "Service",
-          identifiers = ["lambda.amazonaws.com.cn"]
+          identifiers = ["lambda.amazonaws.com"]
         }
       }
     }

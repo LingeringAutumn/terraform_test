@@ -4,3 +4,4 @@
 *.tfvars
 *.zip
 .terraform.lock.hcl
+builds
