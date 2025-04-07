@@ -1,58 +1,48 @@
 provider "aws" {
   region = var.aws_region
-  # 为中国区域添加特殊配置
-  endpoints {
-    sts = "sts.${var.aws_region}.amazonaws.com.cn"
-  }
-  # 凭证将从共享配置或环境变量中自动读取
 }
 
-# 创建用于Lambda的IAM角色
-resource "aws_iam_role" "lambda_role" {
-  name = "${var.lambda_function_name}-role"
+# 使用AWS提供的Lambda模块
+module "lambda_function" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 4.0"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "lambda.amazonaws.com.cn"  # 中国区域使用特殊的服务标识符
+  function_name = var.lambda_function_name
+  description   = "使用Terraform模块部署的Lambda函数"
+  handler       = "index.handler"
+  runtime       = var.lambda_runtime
+  timeout       = var.lambda_timeout
+
+  source_path = "${path.module}/src"
+
+  environment_variables = var.lambda_environment_variables
+
+  # 针对中国区域进行调整
+  create_role = true
+  lambda_at_edge = false
+  
+  # 为中国区域自定义IAM策略
+  assume_role_policy_statements = {
+    lambda = {
+      effect  = "Allow",
+      actions = ["sts:AssumeRole"],
+      principals = {
+        service = {
+          type        = "Service",
+          identifiers = ["lambda.amazonaws.com.cn"]
+        }
       }
-    }]
-  })
-}
+    }
+  }
 
-# 附加基础Lambda执行策略
-resource "aws_iam_role_policy_attachment" "lambda_basic" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
-
-# 打包Lambda函数代码
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/src"
-  output_path = "${path.module}/lambda_function.zip"
-}
-
-# 创建Lambda函数
-resource "aws_lambda_function" "function" {
-  function_name    = var.lambda_function_name
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "index.handler"
-  runtime          = var.lambda_runtime
-  timeout          = var.lambda_timeout
-
-  environment {
-    variables = var.lambda_environment_variables
+  # 其他配置
+  cloudwatch_logs_retention_in_days = 14
+  attach_cloudwatch_logs_policy     = true
+  
+  tags = {
+    Environment = lookup(var.lambda_environment_variables, "ENV", "dev")
+    Project     = "terraform-lambda-demo"
   }
 }
 
-# 创建CloudWatch日志组
-resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${var.lambda_function_name}"
-  retention_in_days = 14
-}
+# 为任何需要的其他资源添加配置

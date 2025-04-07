@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "部署AWS Lambda函数的区域"
   type        = string
-  default     = "cn-northwest-1"  # 默认为东京区域，您可以根据需要修改
+  default     = "cn-northwest-1"  # 默认为中国宁夏区域
 }
 
 # 删除aws_access_key、aws_secret_key和aws_session_token变量
