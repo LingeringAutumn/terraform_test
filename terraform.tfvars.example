@@ -1,0 +1,25 @@
+# AWS配置
+# 不要在此文件中存储敏感凭证
+
+# 部署AWS Lambda函数的区域
+aws_region = "cn-northwest-1"  # 默认为中国宁夏区域
+
+# Lambda函数的名称
+# 默认值为"terraform-lambda-demo"，可以根据需要修改
+lambda_function_name = "terraform-lambda-demo"
+
+# Lambda函数的运行时环境
+# 默认值为"nodejs18.x"，支持的运行时包括"python3.9", "java11"等
+lambda_runtime = "nodejs18.x"
+
+# Lambda函数的超时时间（秒）
+# 默认值为30秒，可以根据函数的复杂度调整
+lambda_timeout = 30
+
+# Lambda函数的环境变量
+# 默认值为{"ENV": "dev"}，可以根据需要添加更多键值对
+lambda_environment_variables = {
+  ENV = "dev"
+}
+
+# 其他配置（可选）

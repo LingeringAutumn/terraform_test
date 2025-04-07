@@ -1,12 +1,35 @@
-# 使用Terraform模块部署AWS Lambda
+# 使用Terraform部署AWS Lambda
 
-本项目演示如何使用Terraform的AWS Lambda模块将Lambda函数部署到AWS。
+本项目演示如何使用Terraform将AWS Lambda函数部署到AWS。
 
 ## 前提条件
 
-- [AWS账户](https://aws.amazon.com/)
-- [AWS CLI](https://aws.amazon.com/cli/)已配置
-- [Terraform](https://www.terraform.io/downloads.html)已安装(版本 >= 1.0.0)
+在开始之前，请确保您已完成以下步骤：
+
+1. **安装Terraform**
+   - 前往[Terraform官网](https://www.terraform.io/downloads.html)下载适合您操作系统的版本。
+   - 解压下载的文件并将其路径添加到系统的环境变量中。
+   - 验证安装是否成功：
+     ```bash
+     terraform -v
+     ```
+
+2. **安装AWS CLI**
+   - 前往[AWS CLI官网](https://aws.amazon.com/cli/)下载并安装AWS CLI。
+   - 验证安装是否成功：
+     ```bash
+     aws --version
+     ```
+
+3. **配置AWS凭证**
+   - 运行以下命令并根据提示输入您的AWS访问密钥和区域：
+     ```bash
+     aws configure
+     ```
+   - 验证凭证是否正确配置：
+     ```bash
+     aws sts get-caller-identity --region cn-northwest-1 --endpoint-url https://sts.cn-northwest-1.amazonaws.com.cn
+     ```
 
 ## 项目结构
 
@@ -20,43 +43,53 @@ aws-lambda/
     └── index.js          # 示例Node.js Lambda函数
 ```
 
-## 配置步骤
+## 修改Lambda函数代码
 
-1. **配置AWS凭证**
-
-   确保您已经配置好AWS凭证。您可以通过运行以下命令配置：
-
-   ```bash
-   aws configure
+1. 打开`src/index.js`文件。
+2. 替换为您自己的Lambda函数代码。例如：
+   ```javascript
+   exports.handler = async (event) => {
+       return {
+           statusCode: 200,
+           body: JSON.stringify({ message: "Hello, Custom Lambda!" }),
+       };
+   };
    ```
 
-2. **初始化Terraform**
+## 部署步骤
 
-   ```bash
-   terraform init
-   ```
+1. **初始化Terraform**
+   - 在项目根目录运行以下命令：
+     ```bash
+     terraform init
+     ```
 
-3. **查看部署计划**
+2. **查看部署计划**
+   - 运行以下命令以查看Terraform将创建的资源：
+     ```bash
+     terraform plan
+     ```
 
-   ```bash
-   terraform plan
-   ```
+3. **部署资源**
+   - 运行以下命令以实际部署资源：
+     ```bash
+     terraform apply
+     ```
+   - 系统会要求确认，输入`yes`继续。
 
-4. **部署资源**
+4. **验证Lambda函数**
+   - 部署完成后，您可以使用以下命令调用Lambda函数：
+     ```bash
+     aws lambda invoke --function-name terraform-lambda-demo --payload '{}' response.json --region cn-northwest-1 --endpoint-url https://lambda.cn-northwest-1.amazonaws.com.cn
+     ```
+   - 检查`response.json`文件以查看函数的响应。
 
-   ```bash
-   terraform apply
-   ```
+## 清理资源
 
-   系统会要求确认，输入`yes`继续。
-
-5. **清理资源**
-
-   当您不再需要这些资源时，可以通过以下命令删除它们：
-
-   ```bash
-   terraform destroy
-   ```
+当您不再需要这些资源时，可以通过以下命令删除它们：
+```bash
+terraform destroy
+```
 
 ## AWS中国区域特别说明
 
@@ -92,7 +125,7 @@ aws sts get-caller-identity --region cn-northwest-1 --endpoint-url https://sts.c
 
 如遇问题，请检查：
 
-1. AWS凭证是否正确配置
-2. Terraform版本是否兼容(需要1.0.0以上)
-3. Lambda函数代码是否有语法错误
-4. 是否正确初始化了模块依赖
+1. AWS凭证是否正确配置。
+2. Terraform版本是否兼容(需要1.0.0以上)。
+3. Lambda函数代码是否有语法错误。
+4. 是否正确初始化了模块依赖。

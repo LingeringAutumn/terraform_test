@@ -9,13 +9,13 @@ variable "aws_region" {
 variable "lambda_function_name" {
   description = "Lambda函数的名称"
   type        = string
-  default     = "terraform-lambda-demo"
+  # default     = "terraform-lambda-demo"
 }
 
 variable "lambda_runtime" {
   description = "Lambda函数的运行时环境"
   type        = string
-  default     = "nodejs18.x"
+  # default     = "nodejs18.x"
 }
 
 variable "lambda_timeout" {
