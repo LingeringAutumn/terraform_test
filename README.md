@@ -38,7 +38,10 @@ aws-lambda/
 ├── README.md             # 项目文档
 ├── main.tf               # 主Terraform配置文件，使用AWS Lambda模块
 ├── variables.tf          # Terraform变量定义
+├── terraform.tfvars      # Terraform变量值配置文件（自定义配置在这里）
+├── terraform.tfvars.example # 变量配置示例文件
 ├── outputs.tf            # Terraform输出定义
+├── versions.tf           # Terraform版本要求配置
 └── src/                  # Lambda函数源代码
     └── index.js          # 示例Node.js Lambda函数
 ```
@@ -54,6 +57,37 @@ aws-lambda/
            body: JSON.stringify({ message: "Hello, Custom Lambda!" }),
        };
    };
+   ```
+
+## 自定义部署配置
+
+通过修改`terraform.tfvars`文件（不是variables.tf）来自定义您的部署：
+
+1. 如果`terraform.tfvars`文件不存在，可以复制示例文件：
+   ```bash
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+
+2. 编辑`terraform.tfvars`文件，根据您的需求修改变量值：
+   ```
+   # 部署AWS Lambda函数的区域
+   aws_region = "cn-northwest-1"
+   
+   # Lambda函数的名称
+   lambda_function_name = "my-custom-function"
+   
+   # Lambda函数的运行时环境（nodejs18.x, python3.9, java11等）
+   lambda_runtime = "python3.9"
+   
+   # Lambda函数的超时时间（秒）
+   lambda_timeout = 60
+   
+   # Lambda函数的环境变量
+   lambda_environment_variables = {
+     ENV = "prod"
+     API_KEY = "your-api-key"
+     DEBUG = "false"
+   }
    ```
 
 ## 部署步骤
@@ -80,7 +114,11 @@ aws-lambda/
 4. **验证Lambda函数**
    - 部署完成后，您可以使用以下命令调用Lambda函数：
      ```bash
-     aws lambda invoke --function-name terraform-lambda-demo --payload '{}' response.json --region cn-northwest-1 --endpoint-url https://lambda.cn-northwest-1.amazonaws.com.cn
+     aws lambda invoke --function-name $(terraform output -raw lambda_function_name) --payload '{}' response.json --region $(terraform output -raw aws_region) --endpoint-url https://lambda.$(terraform output -raw aws_region).amazonaws.com.cn
+     ```
+   - 或者使用terraform输出的命令示例：
+     ```bash
+     $(terraform output -raw lambda_invoke_command)
      ```
    - 检查`response.json`文件以查看函数的响应。
 
@@ -113,13 +151,15 @@ aws sts get-caller-identity --region cn-northwest-1 --endpoint-url https://sts.c
 - 管理函数代码打包和部署
 - 支持环境变量配置
 
-## 自定义配置
+## 变量说明
 
-您可以通过修改`variables.tf`文件中的变量来自定义部署：
+项目中的主要配置变量（在terraform.tfvars中设置）：
 
-- `aws_region`: AWS区域
+- `aws_region`: AWS区域（默认为cn-northwest-1）
 - `lambda_function_name`: Lambda函数名称
 - `lambda_runtime`: Lambda运行时环境
+- `lambda_timeout`: Lambda函数超时时间（秒）
+- `lambda_environment_variables`: Lambda函数环境变量
 
 ## 故障排除
 
@@ -129,3 +169,4 @@ aws sts get-caller-identity --region cn-northwest-1 --endpoint-url https://sts.c
 2. Terraform版本是否兼容(需要1.0.0以上)。
 3. Lambda函数代码是否有语法错误。
 4. 是否正确初始化了模块依赖。
+5. 确保terraform.tfvars文件中的变量设置正确。
