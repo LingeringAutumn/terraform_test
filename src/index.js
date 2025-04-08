@@ -4,7 +4,7 @@ exports.handler = async (event) => {
     const response = {
         statusCode: 200,
         body: JSON.stringify({
-            message: 'Hello, World! Lambda函数已成功执行。',
+            message: 'Hello, World! Lambda函数已成功执行了。',
             timestamp: new Date().toISOString(),
             event: event
         }),

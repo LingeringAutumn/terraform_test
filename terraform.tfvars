@@ -6,7 +6,7 @@ aws_region = "cn-northwest-1"  # 默认为中国宁夏区域
 
 # Lambda函数的名称
 # 默认值为"terraform-lambda-demo"，可以根据需要修改
-lambda_function_name = "terraform-lambda-demo"
+lambda_function_name = "terraform-lambda"
 
 # Lambda函数的运行时环境
 # 默认值为"nodejs18.x"，支持的运行时包括"python3.9", "java11"等
