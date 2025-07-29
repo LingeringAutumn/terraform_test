@@ -18,12 +18,12 @@ go mod tidy
 
 # 编译Go代码
 echo "编译Go代码..."
-go build -o main main.go
+go build -o bootstrap main.go
 
 if [ $? -eq 0 ]; then
     echo "Go Lambda函数构建成功！"
-    echo "生成的可执行文件: main"
-    ls -la main
+    echo "生成的可执行文件: bootstrap"
+    ls -la bootstrap
 else
     echo "构建失败！"
     exit 1

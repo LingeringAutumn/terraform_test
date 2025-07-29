@@ -14,7 +14,7 @@ module "lambda_function" {
 
   function_name = var.lambda_function_name
   description   = "使用Terraform模块部署的Lambda函数"
-  handler       = "main"  # Go使用main作为handler
+  handler       = "bootstrap"  # Go使用bootstrap作为handler
   runtime       = var.lambda_runtime
   timeout       = var.lambda_timeout
 
