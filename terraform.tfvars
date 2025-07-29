@@ -9,8 +9,8 @@ aws_region = "cn-northwest-1"  # 默认为中国宁夏区域
 lambda_function_name = "terraform-lambda"
 
 # Lambda函数的运行时环境
-# 默认值为"nodejs18.x"，支持的运行时包括"python3.9", "java11"等
-lambda_runtime = "nodejs18.x"
+# 使用provided.al2用于Go语言在Amazon Linux 2上运行
+lambda_runtime = "provided.al2"
 
 # Lambda函数的超时时间（秒）
 # 默认值为30秒，可以根据函数的复杂度调整
