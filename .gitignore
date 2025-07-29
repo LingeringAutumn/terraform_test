@@ -5,3 +5,5 @@
 # .terraform.lock.hcl
 # .terraform.tfvars
 builds
+*.json
+src/bootstrap
