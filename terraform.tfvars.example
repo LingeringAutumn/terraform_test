@@ -1,0 +1,76 @@
+# AWS配置
+# 不要在此文件中存储敏感凭证
+
+# 部署AWS Lambda函数的区域
+aws_region = "cn-northwest-1"  # 默认为中国宁夏区域
+
+# Lambda函数的名称
+lambda_function_name = "feishu-notification-service"
+
+# Lambda函数的运行时环境
+# 使用provided.al2用于Go语言在Amazon Linux 2上运行
+lambda_runtime = "provided.al2"
+
+# Lambda函数的超时时间（秒）
+lambda_timeout = 60
+
+# ========================================
+# 飞书机器人配置（请替换为您的实际配置）
+# ========================================
+
+# 飞书应用ID（必需）
+# 在飞书开发者后台获取，格式如: cli_xxxxxxxxxx
+feishu_app_id = "your_feishu_app_id"
+
+# 飞书应用密钥（必需）
+# 在飞书开发者后台获取
+feishu_app_secret = "your_feishu_app_secret"
+
+# 飞书API基础URL
+# 国际版: https://open.feishu.cn
+# 中国版: https://open.feishu.cn
+feishu_base_url = "https://open.feishu.cn"
+
+# ========================================
+# 群聊配置
+# ========================================
+
+# 默认群聊ID（可选，当没有匹配的项目映射时使用）
+# 群聊ID格式如: oc_xxxxxxxxxx
+default_chat_id = "your_default_chat_id"
+
+# 项目到群聊的映射（JSON格式字符串）
+# 格式: {"项目名":"群聊ID","项目名":"群聊ID1,群聊ID2"}
+# 支持一个项目对应多个群聊，用逗号分隔
+# 示例配置:
+project_chat_mapping = <<-EOT
+{
+  "user-service": "oc_user_service_chat_id",
+  "payment-service": "oc_payment_service_chat_id", 
+  "order-service": "oc_order_service_chat_id",
+  "monitoring": "oc_ops_chat_id,oc_dev_chat_id",
+  "ci-cd": "oc_devops_chat_id",
+  "default": "oc_default_chat_id"
+}
+EOT
+
+# ========================================
+# Lambda环境变量
+# ========================================
+lambda_environment_variables = {
+  ENV          = "prod"                        # 环境标识
+  SERVICE_NAME = "feishu-notification-service" # 服务名称
+  LOG_LEVEL    = "info"                       # 日志级别: debug, info, warn, error
+}
+
+# ========================================
+# 其他可选配置
+# ========================================
+
+# 如果需要自定义标签，可以取消注释以下配置
+# tags = {
+#   Project     = "notification-system"
+#   Owner       = "dev-team"
+#   Environment = "production"
+#   CostCenter  = "engineering"
+# }
